@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+
+:root { font-family: 'DM Sans', sans-serif; color: #20312b; background: #f5f7f3; font-synthesis: none; text-rendering: optimizeLegibility; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: #f5f7f3; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; transition: transform 160ms ease-out, background-color 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out; }
+button:active { transform: scale(.98); }
+a { color: inherit; text-decoration: none; }
+.font-display { font-family: 'Fraunces', Georgia, serif; }
+.font-mono { font-family: 'DM Mono', monospace; }
+.card-surface { border: 1px solid #dce5dd; background: #fbfdf9; border-radius: 22px; box-shadow: 0 14px 34px rgba(32, 49, 43, .045); }
+.eyebrow { color: #789184; font-size: 10px; font-weight: 700; letter-spacing: .18em; line-height: 1.4; text-transform: uppercase; }
+.page-title { margin-top: 8px; font-family: 'Fraunces', Georgia, serif; font-size: clamp(2.25rem, 4vw, 3.55rem); letter-spacing: -.055em; line-height: 1; }
+.page-subtitle { margin-top: 12px; color: #718279; font-size: 15px; line-height: 1.6; }
+.section-title { margin-top: 5px; font-family: 'Fraunces', Georgia, serif; font-size: 1.55rem; letter-spacing: -.04em; line-height: 1.05; }
+.button-primary, .button-secondary { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; border-radius: 13px; padding: 0 16px; font-size: 13px; font-weight: 700; }
+.button-primary { background: #173c34; color: #f7fbf3; box-shadow: 0 7px 15px rgba(23, 60, 52, .14); }
+.button-primary:hover { background: #245749; }
+.button-secondary { border: 1px solid #d5e1d7; background: #fbfdf9; color: #527361; }
+.button-secondary:hover { border-color: #9db8a5; background: #f1f6ef; }
+.nav-link { display: flex; align-items: center; gap: 12px; border-radius: 13px; padding: 11px 12px; color: #718279; font-size: 13px; font-weight: 600; }
+.nav-link:hover { background: #edf3ea; color: #173c34; }
+.nav-link-active { background: #e7f0e5; color: #173c34; box-shadow: inset 3px 0 #2e9565; }
+.field { width: 100%; border: 1px solid #d8e3d9; border-radius: 12px; background: #fbfdf9; padding: 11px 13px; color: #20312b; font-size: 13px; outline: none; transition: border-color 160ms ease, box-shadow 160ms ease; }
+.field:focus { border-color: #7da88b; box-shadow: 0 0 0 3px rgba(125, 168, 139, .16); }
+.field-icon { position: absolute; top: 50%; left: 13px; transform: translateY(-50%); color: #91a198; }
+.form-label { display: block; margin-bottom: 8px; color: #4f675a; font-size: 12px; font-weight: 700; }
+.form-label em { color: #a0aca4; font-size: 11px; font-style: normal; font-weight: 400; }
+.signal-card { display: flex; gap: 12px; border: 1px solid #edf0eb; border-radius: 16px; padding: 14px; }
+.signal-number { color: #7da88b; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; }
+.signal-card strong { display: block; font-size: 13px; }
+.signal-card p { margin-top: 3px; color: #839188; font-size: 11px; line-height: 1.5; }
+.metric-icon { display: inline-grid; height: 38px; width: 38px; place-items: center; border-radius: 13px; background: #edf3ea; color: #527361; }
+.metric-value { margin-top: 8px; font-family: 'Fraunces', Georgia, serif; font-size: 2.6rem; letter-spacing: -.06em; line-height: 1; }
+.metric-value small { font-family: 'DM Sans', sans-serif; color: #89978f; font-size: 14px; letter-spacing: 0; }
+.metric-caption { margin-top: 7px; color: #89978f; font-size: 11px; }
+.table-input { width: 92px; border: 1px solid #d8e3d9; border-radius: 9px; background: #fbfdf9; padding: 7px 9px; font-size: 12px; outline: none; }
+.table-input:focus { border-color: #7da88b; box-shadow: 0 0 0 3px rgba(125, 168, 139, .16); }
+.icon-button { display: inline-grid; height: 32px; width: 32px; place-items: center; border: 1px solid #dce5dd; border-radius: 10px; background: #fbfdf9; color: #718279; }
+.icon-button:hover { border-color: #9db8a5; color: #173c34; }
+.leaflet-container { font-family: 'DM Sans', sans-serif; background: #dae8dc; }
+.leaflet-control-zoom a { color: #173c34 !important; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { border-radius: 13px; background: #fbfdf9; }
+.leaflet-popup-content { margin: 15px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
