@@ -219,6 +219,17 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          ui: ["lucide-react", "framer-motion"],
+          charts: ["recharts"],
+          maps: ["leaflet", "react-leaflet"],
+          supabase: ["@supabase/supabase-js"],
+        },
+      },
+    },
   },
   server: {
     port: 3000,
