@@ -5,9 +5,9 @@ import { sampleLocations, type LocationRecord } from "../data/mockData";
 export type FieldReport = { id: string; reporter_name: string; phone?: string | null; location_id: string; report_type: string; severity: string; description: string; observed_at: string; reviewed: boolean; created_at: string; };
 export type AlertRecord = { id: string; location_id: string; title: string; message: string; severity: string; status: string; created_at: string; };
 export type SensorReading = { id: string; location_id: string; moisture_pct: number; source: string; recorded_at: string; };
-type ReportInsert = Omit<FieldReport, "id" | "created_at" | "reviewed"> & { user_id: string };
-type AlertInsert = Omit<AlertRecord, "id" | "created_at" | "status"> & { user_id: string };
-type ReadingInsert = Omit<SensorReading, "id" | "recorded_at"> & { user_id: string };
+type ReportInsert = Omit<FieldReport, "id" | "created_at" | "reviewed"> & { user_id?: string | null };
+type AlertInsert = Omit<AlertRecord, "id" | "created_at" | "status"> & { user_id?: string | null };
+type ReadingInsert = Omit<SensorReading, "id" | "recorded_at"> & { user_id?: string | null };
 
 export async function loadLocations(): Promise<LocationRecord[]> {
   const { data, error } = await supabase.from("locations").select("*").order("name");

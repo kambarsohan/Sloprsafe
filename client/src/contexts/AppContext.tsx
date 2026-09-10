@@ -9,11 +9,80 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
 function friendlyError(error: unknown) { const message = error instanceof Error ? error.message : "Something went wrong while loading Supabase data."; if (message.toLowerCase().includes("relation") || message.toLowerCase().includes("does not exist")) return "Supabase tables are not initialized yet. Run supabase/schema.sql in the Supabase SQL editor, then refresh."; return message; }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null); const [locations, setLocations] = useState<LocationRecord[]>([]); const [reports, setReports] = useState<FieldReport[]>([]); const [alerts, setAlerts] = useState<AlertRecord[]>([]); const [readings, setReadings] = useState<SensorReading[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
-  const refresh = async () => { setLoading(true); setError(null); try { await seedLocationsIfEmpty(); const [nextLocations, nextReports, nextAlerts, nextReadings] = await Promise.all([loadLocations(), loadReports(), loadAlerts(), loadSensorReadings()]); setLocations(nextLocations); setReports(nextReports); setAlerts(nextAlerts); setReadings(nextReadings); } catch (loadError) { setError(friendlyError(loadError)); } finally { setLoading(false); } };
-  useEffect(() => { supabase.auth.getSession().then(({ data }) => setSession(data.session)); const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession)); return () => listener.subscription.unsubscribe(); }, []);
-  useEffect(() => { if (session) refresh(); }, [session]);
-  const value = useMemo<AppContextValue>(() => ({ session, user: session?.user || null, locations, reports, alerts, readings, loading, error, refresh, updateLocation: async (id, patch) => { await updateLocation(id, patch); await refresh(); }, submitReport: async (report) => { if (!session?.user.id) throw new Error("You must be signed in to submit a report."); await createReport({ ...report, user_id: session.user.id }); await refresh(); }, reviewReport: async (id, reviewed) => { await markReportReviewed(id, reviewed); await refresh(); }, addAlert: async (alert) => { if (!session?.user.id) throw new Error("You must be signed in to create an alert."); await createAlert({ ...alert, user_id: session.user.id }); await refresh(); }, addReading: async (reading) => { if (!session?.user.id) throw new Error("You must be signed in to add a sensor reading."); await createSensorReading({ ...reading, user_id: session.user.id }); await updateLocation(reading.location_id, { soil_moisture_pct: reading.moisture_pct }); await refresh(); } }), [session, locations, reports, alerts, readings, loading, error]);
+  const [session, setSession] = useState<Session | null>(null);
+  const [locations, setLocations] = useState<LocationRecord[]>([]);
+  const [reports, setReports] = useState<FieldReport[]>([]);
+  const [alerts, setAlerts] = useState<AlertRecord[]>([]);
+  const [readings, setReadings] = useState<SensorReading[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await seedLocationsIfEmpty();
+      const [nextLocations, nextReports, nextAlerts, nextReadings] = await Promise.all([
+        loadLocations(),
+        loadReports(),
+        loadAlerts(),
+        loadSensorReadings(),
+      ]);
+      setLocations(nextLocations);
+      setReports(nextReports);
+      setAlerts(nextAlerts);
+      setReadings(nextReadings);
+    } catch (loadError) {
+      setError(friendlyError(loadError));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Load data immediately on mount for all users (no login required)
+    refresh();
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const value = useMemo<AppContextValue>(
+    () => ({
+      session,
+      user: session?.user || null,
+      locations,
+      reports,
+      alerts,
+      readings,
+      loading,
+      error,
+      refresh,
+      updateLocation: async (id, patch) => {
+        await updateLocation(id, patch);
+        await refresh();
+      },
+      submitReport: async (report) => {
+        await createReport({ ...report, user_id: session?.user.id as any });
+        await refresh();
+      },
+      reviewReport: async (id, reviewed) => {
+        await markReportReviewed(id, reviewed);
+        await refresh();
+      },
+      addAlert: async (alert) => {
+        await createAlert({ ...alert, user_id: session?.user.id as any });
+        await refresh();
+      },
+      addReading: async (reading) => {
+        await createSensorReading({ ...reading, user_id: session?.user.id as any });
+        await updateLocation(reading.location_id, { soil_moisture_pct: reading.moisture_pct });
+        await refresh();
+      },
+    }),
+    [session, locations, reports, alerts, readings, loading, error],
+  );
+
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 export function useApp() { const context = useContext(AppContext); if (!context) throw new Error("useApp must be used inside AppProvider"); return context; }
